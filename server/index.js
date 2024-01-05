@@ -3,6 +3,7 @@ const { Server } = require("socket.io");
 const { createServer } = require("http");
 const router = require("./router");
 const { addUser, removeUser, getUser, getUsersInRoom } = require("./users.js");
+const e = require("express");
 
 const PORT = process.env.PORT || 5000;
 
@@ -25,13 +26,18 @@ io.on("connect", (socket) => {
     socket.emit("message", {
       //envia mensagem para um em específico. (Para o usuário)
       user: "admin",
-      text: `${user.name}, welcome to the room ${user.room}`,
+      text: `${user.name}, bem vindo a sala ${user.room}`,
     });
     socket.broadcast // broadcast envia mensagens para todos (Para todos os usuários)
       .to(user.room)
-      .emit("message", { user: "admin", text: `${user.name}, has joined!` });
+      .emit("message", { user: "admin", text: `${user.name}, entrou!` });
 
     socket.join(user.room);
+
+    io.to(user.room).emit("roomData", {
+      room: user.room,
+      users: getUsersInRoom(user.room),
+    });
 
     callback();
   });
@@ -47,7 +53,14 @@ io.on("connect", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("User has left!");
+    const user = removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit("message", {
+        user: user.name,
+        text: `${user.name} saiu.`,
+      });
+    }
   });
 });
 

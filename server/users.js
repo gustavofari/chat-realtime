@@ -29,15 +29,7 @@ const removeUser = (id) => {
   users = users.find((user) => user.id !== id);
 };
 
-const getUser = (id) => {
-  const get = users.find((user) => user.id === id);
-
-  if (get) {
-    return { error: "Usuário não encontrado!" };
-  }
-
-  return get;
-};
+const getUser = (id) => users.find((user) => user.id === id);
 
 const getUsersInRoom = (room) => users.filter((user) => user.room === room);
 

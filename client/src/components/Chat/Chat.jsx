@@ -17,7 +17,7 @@ const Chat = () => {
   const [users, setUsers] = useState("");
   const [messages, setMessages] = useState([]);
 
-  const ENDPOINT = "localhost:5000";
+  const ENDPOINT = "https://chat-realtime-backend-891c.onrender.com/";
 
   const location = useLocation().search;
 
